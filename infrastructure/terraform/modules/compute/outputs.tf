@@ -9,8 +9,8 @@ output "lambda_function_names" {
   description = "List of all lambda function names"
   value       = [for v in aws_lambda_function.services : v.function_name]
 }
-
 output "all_function_names" {
-    description = "List of all lambda function names for observability"
-    value       = [for k, v in aws_lambda_function.services : v.function_name]
+  description = "Map of all lambda function names for observability"
+  # This converts the resource map into a map of { key = function_name }
+  value       = { for k, v in aws_lambda_function.services : k => v.function_name }
 }

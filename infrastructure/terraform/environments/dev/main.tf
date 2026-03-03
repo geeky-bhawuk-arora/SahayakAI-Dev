@@ -27,12 +27,14 @@ module "networking" {
 module "security" {
   source      = "../../modules/security"
   environment = var.environment
+  vpc_id      = module.networking.vpc_id
 }
 module "storage" {
   source             = "../../modules/storage"
   environment        = var.environment
-  kms_key_arn        = module.security.kms_key_arn
+  kms_key_arn        = module.security.pii_kms_key_arn
   private_subnet_ids = module.networking.private_subnet_ids
+  vpc_id      = module.networking.vpc_id
 }
 module "compute" {
   source              = "../../modules/compute"
@@ -43,9 +45,9 @@ module "compute" {
   sessions_table_name = module.storage.sessions_table_name
   users_table_name    = module.storage.users_table_name
   schemes_table_name  = module.storage.schemes_table_name
-  audio_input_bucket  = module.storage.audio_input_bucket
-  audio_output_bucket = module.storage.audio_output_bucket
-  kms_key_arn         = module.security.kms_key_arn
+  audio_input_bucket  = module.storage.audio_input_bucket_id
+  audio_output_bucket = module.storage.audio_output_bucket_id
+  kms_key_arn         = module.security.pii_kms_key_arn
 }
 module "messaging" {
   source      = "../../modules/messaging"
@@ -54,5 +56,5 @@ module "messaging" {
 module "observability" {
   source                = "../../modules/observability"
   environment           = var.environment
-  lambda_function_names = module.compute.lambda_function_names
+  lambda_function_names  = module.compute.all_function_names
 }
