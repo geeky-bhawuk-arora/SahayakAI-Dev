@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  sahayak-mock-demo:
+    build: 
+      context: .
+      dockerfile: Dockerfile.mock
+    ports:
+      - "8501:8501"
+    environment:
+      - MOCK_MODE=1
+      - BEDROCK_MODEL_ID=mock-model
+    volumes:
+      # Optional: Mount local code for live reloading during development
+      - .:/app
+    # Streamlit requires tty for nice formatting occasionally
+    tty: true

@@ -5,6 +5,7 @@ Falls back to Amazon Comprehend for ambiguous text.
 import re
 import boto3
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
