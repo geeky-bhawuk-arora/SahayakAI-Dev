@@ -56,8 +56,9 @@ class EligibilityRuleEngine:
     RULES_TABLE = os.environ.get("RULES_TABLE", "sahayak-dev-eligibility-rules")
 
     def __init__(self):
-        self.dynamodb = boto3.resource("dynamodb", region_name="ap-south-1")
-        self.rules_table = self.dynamodb.Table(self.RULES_TABLE)
+        if os.environ.get("MOCK_MODE") != "1":
+            self.dynamodb = boto3.resource("dynamodb", region_name="ap-south-1")
+            self.rules_table = self.dynamodb.Table(self.RULES_TABLE)
         self._rules_cache: Dict[str, dict] = {}
 
     def evaluate(self, scheme_id: str, user_profile: dict) -> EligibilityDecision:
@@ -177,6 +178,19 @@ class EligibilityRuleEngine:
     def _get_rules(self, scheme_id: str) -> Optional[dict]:
         if scheme_id in self._rules_cache:
             return self._rules_cache[scheme_id]
+            
+        if os.environ.get("MOCK_MODE") == "1":
+            try:
+                from scripts.seed_schemes import ELIGIBILITY_RULES
+                for rule in ELIGIBILITY_RULES:
+                    if rule["scheme_id"] == scheme_id:
+                        rules_clean = json.loads(json.dumps(rule, default=str))
+                        self._rules_cache[scheme_id] = rules_clean
+                        return rules_clean
+            except ImportError as e:
+                logger.error(f"MOCK_MODE failed to import ELIGIBILITY_RULES: {e}")
+                return None
+                
         try:
             response = self.rules_table.get_item(
                 Key={"scheme_id": scheme_id, "sk": "RULES#latest"}

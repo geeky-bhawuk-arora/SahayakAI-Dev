@@ -16,7 +16,8 @@ MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "anthropic.claude-3-sonnet-2024022
 
 class BedrockOrchestrator:
     def __init__(self):
-        self.bedrock = boto3.client("bedrock-runtime", region_name="ap-south-1")
+        if os.environ.get("MOCK_MODE") != "1":
+            self.bedrock = boto3.client("bedrock-runtime", region_name="ap-south-1")
 
     def generate_response(
         self,
@@ -26,6 +27,32 @@ class BedrockOrchestrator:
         conversation_history: List[Dict],
         user_context: Dict,
     ) -> Dict:
+        if os.environ.get("MOCK_MODE") == "1":
+            import time
+            time.sleep(1) # simulate latency
+            if "kisan" in user_query.lower() or "pm" in user_query.lower() or "किसान" in user_query.lower():
+                text_en = "PM-KISAN provides income support of Rs 6000 per year to all land-holding farmer families in India. Amount is transferred directly to bank accounts in three equal installments of Rs 2000 each."
+                text_hi = "पीएम-किसान योजना के तहत सभी भूमिधारी किसान परिवारों को प्रति वर्ष 6000 रुपये की आय सहायता दी जाती है।"
+                text = text_hi if language == "hi" else text_en
+                return {
+                    "response_text": text,
+                    "schemes_mentioned": ["PM-KISAN-2024"],
+                    "action_items": ["Verify your Aadhaar", "Link your bank account"],
+                    "needs_more_info": [],
+                    "confidence": 0.99
+                }
+            else:
+                text_en = "I am currently in mock mode. Please ask me about PM Kisan!"
+                text_hi = "मैं अभी मॉक मोड में हूँ। कृपया मुझसे पीएम किसान के बारे में पूछें!"
+                text = text_hi if language == "hi" else text_en
+                return {
+                    "response_text": text,
+                    "schemes_mentioned": [],
+                    "action_items": [],
+                    "needs_more_info": [],
+                    "confidence": 0.9
+                }
+
         system_prompt = self._build_system_prompt(language, user_context)
         rag_context = self._format_rag_context(retrieval_results)
         messages = self._build_messages(conversation_history, user_query, rag_context)

@@ -12,7 +12,8 @@ DEVANAGARI_RANGE = ("\u0900", "\u097F")
 
 class LanguageDetector:
     def __init__(self):
-        self.comprehend = boto3.client("comprehend", region_name="ap-south-1")
+        if os.environ.get("MOCK_MODE") != "1":
+            self.comprehend = boto3.client("comprehend", region_name="ap-south-1")
 
     def detect(self, text: str, hint: str = "auto") -> str:
         if hint in ("hi", "en"):
@@ -33,6 +34,8 @@ class LanguageDetector:
             return self._comprehend_detect(text)
 
     def _comprehend_detect(self, text: str) -> str:
+        if os.environ.get("MOCK_MODE") == "1":
+            return "hi"
         try:
             response = self.comprehend.detect_dominant_language(Text=text[:300])
             languages = response.get("Languages", [])
