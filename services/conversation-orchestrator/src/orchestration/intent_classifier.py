@@ -50,14 +50,15 @@ INTENT_PATTERNS = {
 }
 
 SCHEME_ENTITIES = {
-    "PM-KISAN": [r"किसान", r"pm.?kisan", r"kisan samman"],
-    "PMAY": [r"आवास", r"घर", r"pmay", r"awas yojana", r"housing"],
-    "PMJDY": [r"जन.?धन", r"बैंक खाता", r"jan dhan", r"bank account"],
-    "PMJJBY": [r"बीमा", r"insurance", r"jeevan jyoti"],
-    "MGNREGS": [r"मनरेगा", r"mnrega", r"mgnregs", r"रोज़गार गारंटी"],
-    "PMSYM": [r"श्रम योगी", r"shram yogi", r"असंगठित", r"unorganized worker"],
-    "NPS": [r"पेंशन", r"pension", r"nps", r"national pension"],
-    "PMSBY": [r"सुरक्षा बीमा", r"suraksha bima", r"accident"],
+    "PM-KISAN-2024": ["kisan", "pm kisan", "samman nidhi", "किसान", "सम्मान निधि"],
+    "PMAY-G-2024": ["awaas", "housing", "pmay", "आवास", "मकान"],
+    "MGNREGS-2024": ["nrega", "mgnrega", "employment", "रोजगार", "नरेगा", "मनरेगा"],
+    "PMJDY-2024": ["jan dhan", "bank account", "pmjdy", "जन धन", "खाता"],
+    "PMJJBY-2024": ["jeejan jyoti", "life insurance", "pmjjby", "जीवन ज्योति", "बीमा"],
+    "PMSBY-2024": ["suraksha bima", "accident insurance", "pmsby", "सुरक्षा बीमा", "दुर्घटना"],
+    "PMJAY-2024": ["ayushman", "health insurance", "pmjay", "pm jay", "आयुष्मान", "स्वास्थ्य"],
+    "PMAY-G-2024": ["pmay", "awaas", "housing", "pmay-g", "pmayg", "rural housing", "आवास", "घर"],
+    "MGNREGS-2024": ["mgnregs", "mgnrega", "nrega", "job card", "employment", "wage", "मनरेगा", "नरेगा", "रोजगार"],
 }
 
 
