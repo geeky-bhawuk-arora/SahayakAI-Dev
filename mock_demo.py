@@ -40,160 +40,171 @@ def load_backend():
 
 backend = load_backend()
 
-# --- Custom Styling & CSS (Phase 6: National Scale GovTech Brand UI) ---
+# --- Custom Styling & CSS (Phase 7: Massive Scale Custom Dark Branding) ---
 st.set_page_config(
-    page_title="Sahayak AI - Government of India", 
-    page_icon="🇮🇳", 
+    page_title="Sahayak AI - Massive Scale", 
+    page_icon="🌌", 
     layout="centered", 
     initial_sidebar_state="collapsed"
 )
 
 st.markdown("""
     <style>
-    /* Global GovTech Light Theme styling */
+    /* Global Custom Dark Theme styling */
     .stApp {
-        background-color: #F8F9FA !important; /* Extremely light off-white/grey for readability */
-        color: #212529 !important;
+        background-color: #0A0A0A !important; /* Pitch Black/Deep Dark */
+        color: #E2E8F0 !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     }
     
-    /* Override Streamlit text colors for light mode */
     h1, h2, h3, h4, h5, h6, p, div, span, label {
-        color: #212529 !important;
+        color: #E2E8F0 !important;
     }
     
-    /* Hide native header and adjust padding */
     header {visibility: hidden;}
     .block-container {
         padding-top: 0rem !important;
         max-width: 850px !important; 
     }
 
-    /* Official National Header */
+    /* Vanguard Proprietary Header */
     .gov-header {
-        background-color: #0F4C81; /* Deep Official Blue */
+        background: linear-gradient(90deg, #121212 0%, #1A1A1A 100%);
         padding: 1.5rem 2rem;
-        border-radius: 0 0 12px 12px;
+        border-radius: 0 0 16px 16px;
         color: white !important;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         margin-bottom: 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 4px solid #FF9933; /* Saffron Accent */
+        border-bottom: 2px solid #3B82F6; /* Electric Blue Accent */
+        position: relative;
+        overflow: hidden;
+    }
+    /* Saffron/Green subtle glow effect */
+    .gov-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #FF9933 0%, #3B82F6 50%, #138808 100%);
+        opacity: 0.8;
     }
     .gov-header h2 {
-        color: white !important;
+        color: #FFFFFF !important;
         margin: 0;
-        font-weight: 600;
-        font-size: 1.8rem;
+        font-weight: 700;
+        font-size: 2rem;
+        letter-spacing: 1px;
     }
     .gov-header p {
-        color: #E2E8F0 !important;
+        color: #94A3B8 !important;
         margin: 0;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
     
-    /* Smooth intro animation */
     @keyframes fadeInSlideUp {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
     
-    /* The large central greeting */
     .central-greeting {
         text-align: center;
-        margin-top: 10vh; /* Push down to center */
+        margin-top: 10vh;
         margin-bottom: 2rem;
         animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     .central-greeting h1 {
-        font-size: 2.2rem !important;
-        font-weight: 600 !important;
-        color: #0F4C81 !important;
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        color: #FFFFFF !important;
         letter-spacing: -0.5px;
+        background: -webkit-linear-gradient(45deg, #3B82F6, #10B981);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     
-    /* Streamlit's native Expander Styling */
+    /* Neumorphic Dark Expander */
     [data-testid="stExpander"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 8px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        background-color: #121212 !important;
+        border: 1px solid #2D3748 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2) !important;
     }
     [data-testid="stExpander"] summary {
-        color: #4A5568 !important;
+        color: #A0AEC0 !important;
         font-weight: 500;
     }
     
-    /* Chat message area */
     .stChatMessage {
         background-color: transparent !important;
         padding: 1.5rem 0 !important;
-        border-bottom: 1px solid #E2E8F0 !important; 
+        border-bottom: 1px solid #2D3748 !important; 
         animation: fadeInSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     
-    /* Hide default user icon, style assistant icon */
     [data-testid="chatAvatarIcon-user"] {
         display: none;
     }
     [data-testid="chatAvatarIcon-assistant"] {
-        background-color: #0F4C81 !important; /* Official Blue */
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
         color: white;
-        border-radius: 4px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
     }
     
-    /* The Floating Pill Input Box Override */
+    /* Neon Input Box */
     .stChatFloatingInputContainer {
         max-width: 850px !important;
         margin: 0 auto;
         bottom: 40px !important;
-        background-color: #FFFFFF !important;
+        background-color: #121212 !important;
         border-radius: 25px !important;
-        border: 2px solid #E2E8F0 !important;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        border: 1px solid #3B82F6 !important;
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.15) !important;
         padding: 5px 15px !important;
     }
     
-    /* Input field text color */
     [data-testid="stChatInputTextArea"] {
-        color: #212529 !important;
+        color: #FFFFFF !important;
         background-color: transparent !important;
         border: none !important;
-        font-size: 1.1rem !important; /* Larger text for accessibility */
+        font-size: 1.1rem !important;
     }
     
-    /* Send button icon coloring */
     [data-testid="stChatInputSubmitButton"] {
-        color: #0F4C81 !important;
+        color: #3B82F6 !important;
     }
     
-    /* Pill quick action buttons */
+    /* Cyber Pill Buttons */
     .stButton > button {
-        background-color: #FFFFFF !important;
-        color: #0F4C81 !important;
-        border: 1px solid #CBD5E0 !important;
+        background-color: #121212 !important;
+        color: #60A5FA !important;
+        border: 1px solid #3B82F6 !important;
         border-radius: 20px !important;
         padding: 8px 16px !important;
         font-size: 0.95rem !important;
         font-weight: 500 !important;
-        transition: all 0.2s ease;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
     }
     .stButton > button:hover {
-        background-color: #F7FAFC !important;
-        border-color: #0F4C81 !important;
-        color: #0F4C81 !important;
+        background-color: #3B82F6 !important;
+        border-color: #60A5FA !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        transform: translateY(-1px);
     }
     
-    /* Hide horizontal scrollbar for pills */
     .stHorizontalBlock::-webkit-scrollbar {
         display: none;
     }
     
     hr {
-        border-color: #E2E8F0 !important;
+        border-color: #2D3748 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -202,10 +213,10 @@ st.markdown("""
 st.markdown("""
 <div class="gov-header">
     <div>
-        <h2>Sahayak AI</h2>
-        <p>National Multilingual Govt Scheme Assistant</p>
+        <h2>Sahayak AI <span style="font-size: 1rem; color: #3B82F6; font-weight: normal; border: 1px solid #3B82F6; padding: 2px 6px; border-radius: 12px; margin-left: 10px;">PRO</span></h2>
+        <p>Advanced Proprietary Intelligence Model (60+ Schemes)</p>
     </div>
-    <div style="font-size: 2rem;">🇮🇳</div>
+    <div style="font-size: 2rem;">⚡</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -250,15 +261,15 @@ if not st.session_state.messages:
     # Empty state - show sleek minimal greeting exactly like the screenshot
     st.markdown("""
         <div class="central-greeting">
-            <h1>नमस्कार! How can I assist you today?</h1>
-            <p style="font-size: 1.1rem; color: #4A5568 !important; margin-top: 10px;">I can help you find and apply for over 300+ Government Schemes entirely through conversation.</p>
+            <h1>नमस्कार! I am Sahayak AI.</h1>
+            <p style="font-size: 1.1rem; color: #94A3B8 !important; margin-top: 10px;">Ask me anything. I am powered by a database of over 60+ Central and State Government Schemes.</p>
         </div>
     """, unsafe_allow_html=True)
 else:
     # Display chat history
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
 # Voice Simulation / Quick Queries
 # Add some spacing to separate from chat
@@ -270,13 +281,13 @@ with c1:
 with c2:
     if st.button("🎙️ PMJDY"): voice_sim = "Am I eligible for PMJDY?"
 with c3:
-    if st.button("🎙️ PMJJBY/PMSBY"): voice_sim = "What is PMJJBY?"
-with c4:
     if st.button("🎙️ PM-JAY Health"): voice_sim = "Tell me about Ayushman Bharat"
-with c5:
-    if st.button("🎙️ Rural Housing"): voice_sim = "I need a house under PMAY"
-with c6:
+with c4:
     if st.button("🎙️ Job Guarantee"): voice_sim = "How does NREGA work?"
+with c5:
+    if st.button("🎙️ UP Education Scheme"): voice_sim = "Tell me about Uttar pradesh education support"
+with c6:
+    if st.button("🎙️ Maharashtra Startup"): voice_sim = "Maharashtra startup scheme"
 
 prompt = st.chat_input(" Ask Sahayak anything...")
 

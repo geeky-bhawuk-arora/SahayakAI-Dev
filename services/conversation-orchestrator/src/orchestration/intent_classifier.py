@@ -61,6 +61,21 @@ SCHEME_ENTITIES = {
     "MGNREGS-2024": ["mgnregs", "mgnrega", "nrega", "job card", "employment", "wage", "मनरेगा", "नरेगा", "रोजगार"],
 }
 
+# Auto-inject the massive 55 new generated schemes
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+try:
+    from scripts.seed_schemes import SCHEMES
+    for scheme in SCHEMES:
+        if scheme["scheme_id"] not in SCHEME_ENTITIES:
+            kw = [scheme["name_en"].lower(), scheme["scheme_id"].lower(), scheme["name_hi"].lower()]
+            kw.extend([c.lower() for c in scheme.get("categories", [])])
+            for st in scheme.get("eligible_states", []): 
+                if st != "ALL": kw.append(st.lower())
+            SCHEME_ENTITIES[scheme["scheme_id"]] = kw
+except ImportError:
+    logger.warning("Could not load massive schemes dataset during intent classification import.")
 
 class IntentClassifier:
     """
