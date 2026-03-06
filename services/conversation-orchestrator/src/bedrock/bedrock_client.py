@@ -30,20 +30,47 @@ class BedrockOrchestrator:
         if os.environ.get("MOCK_MODE") == "1":
             import time
             time.sleep(1) # simulate latency
-            if "kisan" in user_query.lower() or "pm" in user_query.lower() or "किसान" in user_query.lower():
-                text_en = "PM-KISAN provides income support of Rs 6000 per year to all land-holding farmer families in India. Amount is transferred directly to bank accounts in three equal installments of Rs 2000 each."
-                text_hi = "पीएम-किसान योजना के तहत सभी भूमिधारी किसान परिवारों को प्रति वर्ष 6000 रुपये की आय सहायता दी जाती है।"
+            query_lower = user_query.lower()
+            
+            # 1. Check for greetings
+            if "hello" in query_lower or "hi " in query_lower or query_lower == "hi" or "नमस्ते" in query_lower or "hey" in query_lower:
+                text_en = "Hello! I am Sahayak AI, your personal government scheme assistant. I'm here to help you access schemes easily using your voice. How can I help you today?"
+                text_hi = "नमस्ते! मैं सहायक एआई हूँ, आपका व्यक्तिगत सरकारी योजना सहायक। मैं आपकी आवाज़ का उपयोग करके योजनाओं तक आसानी से पहुँचने में मदद करने के लिए यहाँ हूँ। मैं आज आपकी कैसे मदद कर सकता हूँ?"
+                text = text_hi if language == "hi" else text_en
+                return {
+                    "response_text": text,
+                    "schemes_mentioned": [],
+                    "action_items": [],
+                    "needs_more_info": [],
+                    "confidence": 0.99
+                }
+
+            # 2. Scheme info queries
+            if "kisan" in query_lower or "pm" in query_lower or "किसान" in query_lower:
+                text_en = "Sure, I can tell you about PM Kisan. It provides an income support of ₹6,000 per year to all land-holding farmer families in India. The amount is transferred directly to your registered bank account in three equal installments."
+                text_hi = "ज़रूर, मैं आपको पीएम-किसान योजना के बारे में बता सकता हूँ। इसके तहत सभी भूमिधारी किसान परिवारों को प्रति वर्ष 6000 रुपये की आय सहायता दी जाती है, जो तीन किश्तों में सीधे खाते में आती है।"
                 text = text_hi if language == "hi" else text_en
                 return {
                     "response_text": text,
                     "schemes_mentioned": ["PM-KISAN-2024"],
-                    "action_items": ["Verify your Aadhaar", "Link your bank account"],
+                    "action_items": ["Verify your Aadhaar via voice", "Link your bank account"],
+                    "needs_more_info": [],
+                    "confidence": 0.99
+                }
+            elif "jan dhan" in query_lower or "pmjdy" in query_lower or "जन धन" in query_lower:
+                text_en = "Certainly! The Pradhan Mantri Jan Dhan Yojana (PMJDY) helps you open a digital bank account with zero balance. It also comes with an overdraft facility and an accident insurance cover of ₹2 lakh."
+                text_hi = "जी हाँ! प्रधानमंत्री जन धन योजना (PMJDY) आपको जीरो बैलेंस पर बैंक खाता खोलने में मदद करती है। इसमें ओवरड्राफ्ट और 2 लाख रुपये का दुर्घटना बीमा भी मिलता है।"
+                text = text_hi if language == "hi" else text_en
+                return {
+                    "response_text": text,
+                    "schemes_mentioned": ["PMJDY-2024"],
+                    "action_items": ["Visit your nearest local bank branch", "Provide e-KYC via Aadhaar"],
                     "needs_more_info": [],
                     "confidence": 0.99
                 }
             else:
-                text_en = "I am currently in mock mode. Please ask me about PM Kisan!"
-                text_hi = "मैं अभी मॉक मोड में हूँ। कृपया मुझसे पीएम किसान के बारे में पूछें!"
+                text_en = "I am currently in a local demo mode! To see me in action, ask me to 'Tell me about PM Kisan', 'Tell me about Jan Dhan', or simply say 'Hello!'"
+                text_hi = "मैं अभी डेमो मोड में हूँ! मुझे काम करते देखने के लिए, 'पीएम किसान के बारे में बताओ', 'जन धन के बारे में बताओ' या बस 'नमस्ते' कहें!"
                 text = text_hi if language == "hi" else text_en
                 return {
                     "response_text": text,

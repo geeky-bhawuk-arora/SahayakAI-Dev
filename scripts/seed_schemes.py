@@ -79,6 +79,28 @@ SCHEMES = [
         "description_en": "MGNREGS guarantees 100 days of unskilled wage employment per year to every rural household whose adult members volunteer to do unskilled manual work.",
         "description_hi": "मनरेगा के तहत हर ग्रामीण परिवार के वयस्क सदस्यों को वर्ष में 100 दिन के अकुशल मजदूरी रोजगार की गारंटी है।"
     },
+    {
+        "scheme_id": "PMJDY-2024",
+        "sk": "VERSION#latest",
+        "name_en": "Pradhan Mantri Jan Dhan Yojana",
+        "name_hi": "प्रधानमंत्री जन धन योजना",
+        "ministry": "Ministry of Finance",
+        "categories": ["finance", "banking"],
+        "benefit_amount": None,
+        "benefit_frequency": "one_time",
+        "eligible_states": ["ALL"],
+        "eligible_occupations": ["ALL"],
+        "eligibility_criteria": {
+            "unbanked": True,
+            "age_gte": 10
+        },
+        "required_documents": ["aadhaar", "pan_or_form60"],
+        "application_url": "https://pmjdy.gov.in",
+        "last_verified": "2024-01-10",
+        "active": True,
+        "description_en": "PMJDY ensures access to financial services, namely Banking/Savings & Deposit Accounts, Remittance, Credit, Insurance, Pension in an affordable manner.",
+        "description_hi": "पीएमजेडीवाई वित्तीय सेवाओं तक पहुंच सुनिश्चित करता है, जैसे कि बैंकिंग/बचत और जमा खाते, प्रेषण, क्रेडिट, बीमा, पेंशन किफायती तरीके से।"
+    },
 ]
 
 ELIGIBILITY_RULES = [
@@ -100,6 +122,15 @@ ELIGIBILITY_RULES = [
         "required_documents": ["aadhaar", "job_card", "bank_account"],
         "criteria": [
             {"field": "age", "operator": "gte", "value": 18, "weight": 2.0, "message_hi_pass": "आयु पात्र है", "message_hi_fail": "18 वर्ष से कम आयु", "message_en_pass": "Age eligible", "message_en_fail": "Below 18 years"},
+        ]
+    },
+    {
+        "scheme_id": "PMJDY-2024",
+        "sk": "RULES#latest",
+        "application_url": "https://pmjdy.gov.in",
+        "required_documents": ["aadhaar"],
+        "criteria": [
+            {"field": "age", "operator": "gte", "value": 10, "weight": 2.0, "message_hi_pass": "आयु 10 वर्ष से अधिक है", "message_hi_fail": "आयु 10 वर्ष से कम है", "message_en_pass": "Age is over 10 years", "message_en_fail": "Age is under 10 years"},
         ]
     }
 ]

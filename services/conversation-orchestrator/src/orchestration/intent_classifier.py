@@ -43,6 +43,10 @@ INTENT_PATTERNS = {
         "hi": [r"कौन सी योजनाएं", r"सभी योजनाएं", r"और कौन सी", r"क्या क्या योजनाएं"],
         "en": [r"list", r"all schemes", r"what schemes", r"available schemes"],
     },
+    "greeting": {
+        "hi": [r"नमस्ते", r"हेलो", r"नमस्कार", r"हाय"],
+        "en": [r"hello", r"hi\b", r"hey", r"greetings"],
+    }
 }
 
 SCHEME_ENTITIES = {

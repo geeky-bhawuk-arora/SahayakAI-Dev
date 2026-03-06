@@ -40,13 +40,50 @@ def load_backend():
 
 backend = load_backend()
 
-# --- Custom Styling & CSS (Dynamic Design Requirement) ---
-st.set_page_config(page_title="Sahayak AI", page_icon="🇮🇳", layout="wide")
+# --- Custom Styling & CSS (Dynamic Design Requirement / Mobile Look) ---
+st.set_page_config(page_title="Sahayak AI", page_icon="🇮🇳", layout="centered")
 
+st.markdown("""
+    <style>
+    /* Simulate a mobile device container */
+    .eczjsme4 { /* This targets the main layout block in newer Streamlit versions */
+        max-width: 480px !important;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 30px;
+        box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+        min-height: 85vh;
+        border: 8px solid #2b2b2b;
+    }
+    
+    /* Hide top padding and header */
+    header {visibility: hidden;}
+    .block-container {padding-top: 1rem;}
+    
+    /* Modern chat bubbles */
+    .stChatMessage {
+        background-color: transparent !important;
+        padding: 0 !important;
+    }
+    [data-testid="chatAvatarIcon-user"] {
+        background-color: #0b93f6 !important;
+    }
+    [data-testid="chatAvatarIcon-assistant"] {
+        background-color: #128c7e !important;
+    }
+    
+    .stChatFloatingInputContainer {
+        max-width: 460px;
+        margin: 0 auto;
+        bottom: 2rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # --- Main UI ---
-st.title("🇮🇳 Sahayak AI - Juggad Demo (Local)")
-st.markdown("Running locally utilizing the local mock modules to bypass AWS endpoints.")
+st.title("🎙️ Sahayak AI")
+st.markdown("*Voice-first Govt Scheme Assistant*")
 
 # Sidebar - Mock User Profile
 with st.sidebar:
@@ -91,14 +128,34 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# User Input
-if prompt := st.chat_input("try: 'Tell me about PM Kisan' or 'Am I eligible?'"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+# Voice Simulation / Quick Queries
+voice_queries = [
+    "--- Use Keyboard (Type Below) ---",
+    "नमस्ते",
+    "Tell me about PM Kisan",
+    "Am I eligible for PMJDY?",
+    "verify aadhaar"
+]
 
-    with st.chat_message("assistant"):
-        with st.spinner("Processing locally..."):
+voice_sim = st.selectbox("🎙️ Simulate Voice Input", voice_queries)
+prompt = st.chat_input("Or type here...")
+
+if voice_sim != "--- Use Keyboard (Type Below) ---":
+    prompt = voice_sim
+
+# User Input Execution
+if getattr(st.session_state, 'last_voice', None) != voice_sim or prompt is not None:
+    # Basic deduplication to avoid double run on selectbox change + enter
+    if prompt and (getattr(st.session_state, 'last_prompt', None) != prompt):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.session_state.last_prompt = prompt
+        st.session_state.last_voice = voice_sim
+        
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        with st.chat_message("assistant"):
+            with st.spinner("Listening & Processing..."):
             
             # Formatted History for Intent Classifier and LLM Orchestrator
             history_formatted = [{"user_input": m["content"]} if m["role"] == "user" else {"bot_response": m["content"]} for m in st.session_state.messages[:-1]]
