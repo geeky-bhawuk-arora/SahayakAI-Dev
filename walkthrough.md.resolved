@@ -1,0 +1,42 @@
+# Sahayak AI - Mock Demo Walkthrough
+
+The mock demo environment has been successfully set up. It uses a custom `MOCK_MODE` to bypass AWS dependencies (DynamoDB, Bedrock, Comprehend) and instead relies on local seed data and hardcoded responses. This enables a fully functional, local "juggad" demo for video recording purposes while preserving the system's modular architecture!
+
+## Changes Made
+
+1. **[rule_engine.py](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/eligibility-engine/src/rules/rule_engine.py) (EligibilityRuleEngine)**: Intercepts [_get_rules()](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/eligibility-engine/src/rules/rule_engine.py#178-207) when `MOCK_MODE=1` is present. It dynamically loads the `ELIGIBILITY_RULES` from [scripts/seed_schemes.py](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/scripts/seed_schemes.py) rather than querying the DynamoDB table.
+2. **[bedrock_client.py](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/conversation-orchestrator/src/bedrock/bedrock_client.py) (BedrockOrchestrator)**: Intercepts [generate_response()](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/conversation-orchestrator/src/bedrock/bedrock_client.py#22-104). Bypasses `boto3` execution and simulates a 1-second network call latency. If the query mentions PM Kisan, it returns a hardcoded summary of the scheme along with mocked `action_items`.
+3. **[language_detector.py](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/voice-service/src/processors/language_detector.py) (LanguageDetector)**: Bypasses the Amazon Comprehend fallback and defaults to [hi](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/eligibility-engine/src/rules/rule_engine.py#213-221) (Hindi) if the regex heuristic cannot confidently detect the language.
+4. **[mock_demo.py](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/mock_demo.py)**: A brand new **Streamlit** frontend script that ties the entire backend together. It configures the Python Path to import from the `services/` directory and instantiates all the major AI components ([LanguageDetector](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/voice-service/src/processors/language_detector.py#14-49), [IntentClassifier](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/conversation-orchestrator/src/orchestration/intent_classifier.py#64-105), [BedrockOrchestrator](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/conversation-orchestrator/src/bedrock/bedrock_client.py#17-176), [EligibilityRuleEngine](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/eligibility-engine/src/rules/rule_engine.py#49-240), [DataMasker](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/user-profile-service/src/privacy/data_masker.py#8-59)).
+
+## How to use the Demo
+
+The Streamlit UI has automatically been started on your local terminal! 
+
+You can interact with it by doing the following:
+
+- **Data Privacy Demonstration**: Look at the sidebar on the left. You will see a mock user profile. Just below it, the [DataMasker](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/user-profile-service/src/privacy/data_masker.py#8-59) output is displayed, showing how the name, phone number, and Aadhaar are masked before logging (DPDP compliance).
+- **Eligibility Checking**: In the chat box at the bottom, type `"Am I eligible?"` or `"क्या मैं पात्र हूँ?"`. The [IntentClassifier](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/conversation-orchestrator/src/orchestration/intent_classifier.py#64-105) will intercept this as an `eligibility_check`. The [EligibilityRuleEngine](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/eligibility-engine/src/rules/rule_engine.py#49-240) will evaluate the mock user profile from the sidebar against the criteria from [seed_schemes.py](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/scripts/seed_schemes.py) and print whether the citizen is `ELIGIBLE` or `INELIGIBLE`, and outline exactly which criteria passed/failed.
+- **Scheme Information Query**: Type `"Tell me about PM Kisan"`. The LLM Orchestrator will trigger and stream back the hardcoded bedrock response about PM Kisan.
+
+You can modify the user profile in the sidebar (e.g. changing income or acreage) and re-run the eligibility check to show different outcomes in real-time.
+
+> [!TIP]
+> If you close the terminal, you can restart the demo at any time by navigating to your repository root and running: `streamlit run mock_demo.py`
+>
+> **Containerized Version:**
+> You can also run this mock demo using Docker! This ensures all dependencies are encapsulated and matches our broader architecture strategy.
+> 1. Stop any local Streamlit process.
+> 2. Run: `docker-compose up -d`
+> 3. Open `http://localhost:8501` in your browser.
+
+## Phase 2: Natural Conversation & Mobile UI Enhancements
+
+To make the demo feel more authentic and closer to the end vision of a voice-first application:
+
+1. **Mobile UI Simulation**: We injected custom HTML/CSS into the Streamlit app to constrain the width, add rounded corners, hide the default Streamlit header, and style the chat bubbles like a modern messaging app (e.g. WhatsApp/iMessage).
+2. **"Voice Input" Simulation**: A dropdown was added to simulate voice inputs. This enables you to easily click complex queries like `"Am I eligible for PMJDY?"` to demonstrate language understanding without typing.
+3. **Conversational Responses**: The fallback mocked LLM logic in [BedrockOrchestrator](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/services/conversation-orchestrator/src/bedrock/bedrock_client.py#17-176) was updated to handle basic greetings ("Hello", "नमस्ते") in a friendly, conversational manner. It also now supports information retrieval for **PM Jan Dhan Yojana (PMJDY)** alongside **PM Kisan**.
+4. **Enriched Seed Data**: Added mock scheme logic for `PMJDY-2024` into [seed_schemes.py](file:///c:/Users/bhawu/Documents/GitHub/SahayakAI-Dev/scripts/seed_schemes.py), allowing the engine to parse eligibility criteria specifically for that scheme.
+
+You can test these out right now in the running interface!
